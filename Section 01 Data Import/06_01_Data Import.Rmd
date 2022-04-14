@@ -1,8 +1,55 @@
 ---
-title: "R Notebook"
-output: Data Wrangling - Section 01
+title: "Data Wrangling - Section 01"
+output: html_notebook
 ---
+# Data import
 
-##Data import
+GIT LOCAL FOLDER : /c/Users/lfima/Documents/edx/06_Data Wrangling <br>
+GIT REMOTE UPSTREAM: https://github.com/lfimada/datawrangling <br>
 
-orig
+
+## Verificar arquivos em algum pacote baixado
+```{r}
+package_path <- system.file("extdata", package="dslabs")
+list.files(package_path)
+```
+## Copiar estes dados para algum diretorio proprio
+Util para modificar dados e realizar analises <br>
+1. Verificar diretorio atual
+```{r}
+getwd()
+```
+2. Criar um diretorio "data"
+```{}
+Fernando Imada@LAPTOP-U3H5S64O MINGW64 ~/Documents/edx/06_Data Wrangling/Section 01 Data Import (master)
+$ mkdir data
+```
+
+3. Copiar os dados de **Murders.csv** para a pasta "data"
+```{r}
+datafile <- "murders.csv"
+destiny <- file.path(getwd(), "data", datafile)
+origin <- file.path(package_path, datafile)
+
+print (paste("Path Destino: " , destiny))
+print (paste("Path Arquivo Origem: " , origin))
+
+```
+```{r}
+file.copy(origin, destiny)
+```
+```{}
+Fernando Imada@LAPTOP-U3H5S64O MINGW64 ~/Documents/edx/06_Data Wrangling/Section 01 Data Import (master)
+$ ls
+'06_01_Data Import.Rmd'   data
+
+Fernando Imada@LAPTOP-U3H5S64O MINGW64 ~/Documents/edx/06_Data Wrangling/Section 01 Data Import (master)
+$ cd data/
+
+Fernando Imada@LAPTOP-U3H5S64O MINGW64 ~/Documents/edx/06_Data Wrangling/Section 01 Data Import/data (master)
+$ ls
+murders.csv
+```
+
+
+
