@@ -51,5 +51,56 @@ $ ls
 murders.csv
 ```
 
+# Pacotes readr e readxl
+
+Ler o arquivo murders.csv
+```{r}
+library (readxl)
+library (readr)
+```
+
+```{r}
+read_csv(destiny, n_max=3)
+```
+## Data Frame vs Table
+```{r}
+x <- read_csv(destiny) #Tabela
+y <- read.csv(destiny) #Data Frame
+
+class(x)
+class(y)
+```
+As diferenças são sutis, talvez alguma função no rode devido a isso, mas é possivel converter um tipo em outro
+
+## Downloading Files from the internet
+
+É possível utilizar dados que estão na internet sem baixa-los
+```{r}
+url <- "https://raw.githubusercontent.com/lfimada/datawrangling/master/Section%2001%20Data%20Import/data/murders.csv"
+db <- read_csv(url, n_max=3)
+head(db)
+```
+
+Para fazer o download, o arquivo ficará no mesmo lugar que o código em R se um path absoluto não for informado
+```{r}
+url <- "https://raw.githubusercontent.com/lfimada/datawrangling/master/Section%2001%20Data%20Import/data/murders.csv"
+dat <- read_csv(url, show_col_types = FALSE)
+download.file(url, "C:/Users/lfima/Downloads/murders.csv")
+```
+Para usar baixar dados, utiliza-los e depois apagá-los, é possível utilizar tempfile() e tempdir()
+```{r}
+tempfile()
+tmp_filename <- tempfile()
+download.file(url, tmp_filename)
+dat <- read_csv(tmp_filename)
+head(dat)
+file.remove(tmp_filename)
+```
+
+
+
+
+
+
 
 

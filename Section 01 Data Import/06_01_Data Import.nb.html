@@ -295,11 +295,185 @@ $ cd data/
 Fernando Imada@LAPTOP-U3H5S64O MINGW64 ~/Documents/edx/06_Data Wrangling/Section 01 Data Import/data (master)
 $ ls
 murders.csv</code></pre>
+</div>
+</div>
+<div id="pacotes-readr-e-readxl" class="section level1">
+<h1>Pacotes readr e readxl</h1>
+<p>Ler o arquivo murders.csv</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSAocmVhZHhsKVxubGlicmFyeSAocmVhZHIpXG5gYGAifQ== -->
+<pre class="r"><code>library (readxl)
+library (readr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSDigJhyZWFkcuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xXG4ifQ== -->
+<pre><code>Warning: package ‘readr’ was built under R version 4.1.1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZF9jc3YoZGVzdGlueSwgbl9tYXg9MylcbmBgYCJ9 -->
+<pre class="r"><code>read_csv(destiny, n_max=3)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMyBDb2x1bW5zOiA1XG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5EZWxpbWl0ZXI6IFwiLFwiXG5jaHIgKDMpOiBzdGF0ZSwgYWJiLCByZWdpb25cbmRibCAoMik6IHBvcHVsYXRpb24sIHRvdGFsXG5cbmkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG5pIFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
+<pre><code>Rows: 3 Columns: 5
+-- Column specification -------------------------------------------------------------------------------------------------
+Delimiter: &quot;,&quot;
+chr (3): state, abb, region
+dbl (2): population, total
+
+i Use `spec()` to retrieve the full column specification for this data.
+i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInNwZWNfdGJsX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93IjozLCJuY29sIjo1LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjMgeCA1Il19fSwicmRmIjoiSDRzSUFBQUFBQUFBQmwxU3ZVN0RNQkMrcG5HclJtcEI0aGtZRzRrV0JzU1NDRFlZVUJtb21IRFMwRVpON0NoeEJHTGlnUkFqejhPTDBIQjI3TkRhZy8xOTM5M3Avcnk0V2M2OXBRY0FmWEI3ZUJPRU1MaStQNXRkekFCY0Ixa1BYQmpKOXczdEp3aWt6M0Vib2d6RE1LTVJ6YW1tQTZUVmxuYkdNbjNuakZveFRualhvZHNPUFZsZTVJSFhZcU9KKzVoVTRnQURUS1J6dUxqNmxtV0hwNTlmNmwxRzV3R29vK3pCODQ4aXdid1ZneHowT2VpUE1Kb25sYTZBR0xFU1ZDU2E5R2tVbVNiTFpKMXlwcGxYOEtMT3FQaFhpT0NDWmxhR1VjbGZmWk5sTER2K3dLdHBtbCs3bEJoSGFFb3hvcmVpZ3ZvdkpjWWoyMWtoUTE3STlCams3TytvVzE1cENVYzFrNVdzcHZHbVp0dnBwVXlnek8wWmE5emZ3NlJONlRUV2pBWUpXNmZNREluZ1owZ3lUU2JZc1dyWUw4cVVtZTE1cUZaK095R3R4RHd6aXVvTmRuOWtNV0xzbXdJQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["chr"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="data-frame-vs-table" class="section level2">
+<h2>Data Frame vs Table</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueCA8LSByZWFkX2NzdihkZXN0aW55KVxuYGBgIn0= -->
+<pre class="r"><code>x &lt;- read_csv(destiny)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNTEgQ29sdW1uczogNVxuLS0gQ29sdW1uIHNwZWNpZmljYXRpb24gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuRGVsaW1pdGVyOiBcIixcIlxuY2hyICgzKTogc3RhdGUsIGFiYiwgcmVnaW9uXG5kYmwgKDIpOiBwb3B1bGF0aW9uLCB0b3RhbFxuXG5pIFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxuaSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 51 Columns: 5
+-- Column specification -------------------------------------------------------------------------------------------------
+Delimiter: &quot;,&quot;
+chr (3): state, abb, region
+dbl (2): population, total
+
+i Use `spec()` to retrieve the full column specification for this data.
+i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueSA8LSByZWFkLmNzdihkZXN0aW55KVxuXG5jbGFzcyh4KVxuYGBgIn0= -->
+<pre class="r"><code>y &lt;- read.csv(destiny)
+
+class(x)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwic3BlY190YmxfZGZcIiBcInRibF9kZlwiICAgICAgXCJ0YmxcIiAgICAgICAgIFwiZGF0YS5mcmFtZVwiIFxuIn0= -->
+<pre><code>[1] &quot;spec_tbl_df&quot; &quot;tbl_df&quot;      &quot;tbl&quot;         &quot;data.frame&quot; </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MoeSlcbmBgYCJ9 -->
+<pre class="r"><code>class(y)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZGF0YS5mcmFtZVwiXG4ifQ== -->
+<pre><code>[1] &quot;data.frame&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>As diferenças são sutis, talvez alguma função no rode devido a isso, mas é possivel converter um tipo em outro</p>
+</div>
+<div id="downloading-files-from-the-internet" class="section level2">
+<h2>Downloading Files from the internet</h2>
+<p>É possível utilizar dados que estão na internet sem baixa-los</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXJsIDwtIFwiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xmaW1hZGEvZGF0YXdyYW5nbGluZy9tYXN0ZXIvU2VjdGlvbiUyMDAxJTIwRGF0YSUyMEltcG9ydC9kYXRhL211cmRlcnMuY3N2XCJcbmRiIDwtIHJlYWRfY3N2KHVybCwgbl9tYXg9MylcbmBgYCJ9 -->
+<pre class="r"><code>url &lt;- &quot;https://raw.githubusercontent.com/lfimada/datawrangling/master/Section%2001%20Data%20Import/data/murders.csv&quot;
+db &lt;- read_csv(url, n_max=3)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMyBDb2x1bW5zOiA1XG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5EZWxpbWl0ZXI6IFwiLFwiXG5jaHIgKDMpOiBzdGF0ZSwgYWJiLCByZWdpb25cbmRibCAoMik6IHBvcHVsYXRpb24sIHRvdGFsXG5cbmkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG5pIFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
+<pre><code>Rows: 3 Columns: 5
+-- Column specification -------------------------------------------------------------------------------------------------
+Delimiter: &quot;,&quot;
+chr (3): state, abb, region
+dbl (2): population, total
+
+i Use `spec()` to retrieve the full column specification for this data.
+i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChkYilcbmBgYCJ9 -->
+<pre class="r"><code>head(db)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MywibmNvbCI6NSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyIzIHggNSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVN2VTdETUJDK3BuR3JSbXBCNGhrWUc0a1dKcFpFc01HQXlrREZoSk9HTm1waVI0a2pFQk1QaEJoNW5yNElEV2ZIRHEwOTJOLzMzWjN1ejR2YjVkeGJlZ0RRQjdlSE4wRUlnNXVIaTluVkRNQjFrUFhBaFpGODM5Ritoa0Q2bkxZaHlqQU1NeHJSbkdvNlFGcHRhV2NzMHcvT3FCWGpoUGNkdXV2UXMrVkZIbmt0TnBxNFQwa2xqakRBUkRxSGkrc2ZXWFo0L3ZXdDNtVjBHWUE2eWg2ODdCUUo1cTBZNUtEUFVYK0UwVHlwZEFYRWlKV2dJdEdrVDZQSU5Ga202NVF6emJ5Q0YzVkd4YjlDQkJjMHN6S01TdjdtbXl4ajJmRW5YazNUL05xbHhEaENVNG9SdlJVVjFIOHRNUjdaM2dvWjhrS214eURuY0VmZDhrcExPS21ackdRMWpUYzEyMDdsYUR4bGJzOVk0LzRCSm0xS3A3Rm1ORWpZT21WbVNBUS9RNUpwTXNHT1ZjTitVYWJNYk05RHRmTGJDV2tsNXBsUlZHK3cvd095YU0yR213SUFBQT09In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["chr"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Para fazer o download, o arquivo ficará no mesmo lugar que o código em R se um path absoluto não for informado</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXJsIDwtIFwiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xmaW1hZGEvZGF0YXdyYW5nbGluZy9tYXN0ZXIvU2VjdGlvbiUyMDAxJTIwRGF0YSUyMEltcG9ydC9kYXRhL211cmRlcnMuY3N2XCJcbmRhdCA8LSByZWFkX2Nzdih1cmwsIHNob3dfY29sX3R5cGVzID0gRkFMU0UpXG5kb3dubG9hZC5maWxlKHVybCwgXCJDOi9Vc2Vycy9sZmltYS9Eb3dubG9hZHMvbXVyZGVycy5jc3ZcIilcbmBgYCJ9 -->
+<pre class="r"><code>url &lt;- &quot;https://raw.githubusercontent.com/lfimada/datawrangling/master/Section%2001%20Data%20Import/data/murders.csv&quot;
+dat &lt;- read_csv(url, show_col_types = FALSE)
+download.file(url, &quot;C:/Users/lfima/Downloads/murders.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoidHJ5aW5nIFVSTCAnaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xmaW1hZGEvZGF0YXdyYW5nbGluZy9tYXN0ZXIvU2VjdGlvbiUyMDAxJTIwRGF0YSUyMEltcG9ydC9kYXRhL211cmRlcnMuY3N2J1xuQ29udGVudCB0eXBlICd0ZXh0L3BsYWluOyBjaGFyc2V0PXV0Zi04JyBsZW5ndGggMTY4NCBieXRlc1xuZG93bmxvYWRlZCAxNjg0IGJ5dGVzXG4ifQ== -->
+<pre><code>trying URL &#39;https://raw.githubusercontent.com/lfimada/datawrangling/master/Section%2001%20Data%20Import/data/murders.csv&#39;
+Content type &#39;text/plain; charset=utf-8&#39; length 1684 bytes
+downloaded 1684 bytes</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Para usar baixar dados, utiliza-los e depois apagá-los, é possível utilizar tempfile() e tempdir()</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVtcGZpbGUoKVxuYGBgIn0= -->
+<pre class="r"><code>tempfile()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiQzpcXFxcVXNlcnNcXFxcbGZpbWFcXFxcQXBwRGF0YVxcXFxMb2NhbFxcXFxUZW1wXFxcXFJ0bXBvajNmZEFcXFxcZmlsZTJmYTAxOWViMTZmMlwiXG4ifQ== -->
+<pre><code>[1] &quot;C:\\Users\\lfima\\AppData\\Local\\Temp\\Rtmpoj3fdA\\file2fa019eb16f2&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG1wX2ZpbGVuYW1lIDwtIHRlbXBmaWxlKClcbmRvd25sb2FkLmZpbGUodXJsLCB0bXBfZmlsZW5hbWUpXG5gYGAifQ== -->
+<pre class="r"><code>tmp_filename &lt;- tempfile()
+download.file(url, tmp_filename)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoidHJ5aW5nIFVSTCAnaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xmaW1hZGEvZGF0YXdyYW5nbGluZy9tYXN0ZXIvU2VjdGlvbiUyMDAxJTIwRGF0YSUyMEltcG9ydC9kYXRhL211cmRlcnMuY3N2J1xuQ29udGVudCB0eXBlICd0ZXh0L3BsYWluOyBjaGFyc2V0PXV0Zi04JyBsZW5ndGggMTY4NCBieXRlc1xuZG93bmxvYWRlZCAxNjg0IGJ5dGVzXG4ifQ== -->
+<pre><code>trying URL &#39;https://raw.githubusercontent.com/lfimada/datawrangling/master/Section%2001%20Data%20Import/data/murders.csv&#39;
+Content type &#39;text/plain; charset=utf-8&#39; length 1684 bytes
+downloaded 1684 bytes</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0IDwtIHJlYWRfY3N2KHRtcF9maWxlbmFtZSlcbmBgYCJ9 -->
+<pre class="r"><code>dat &lt;- read_csv(tmp_filename)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNTEgQ29sdW1uczogNVxuLS0gQ29sdW1uIHNwZWNpZmljYXRpb24gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5EZWxpbWl0ZXI6IFwiLFwiXG5jaHIgKDMpOiBzdGF0ZSwgYWJiLCByZWdpb25cbmRibCAoMik6IHBvcHVsYXRpb24sIHRvdGFsXG5cbmkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG5pIFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
+<pre><code>Rows: 51 Columns: 5
+-- Column specification ------------------------------------------------------------------------------------------------
+Delimiter: &quot;,&quot;
+chr (3): state, abb, region
+dbl (2): population, total
+
+i Use `spec()` to retrieve the full column specification for this data.
+i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChkYXQpXG5gYGAifQ== -->
+<pre class="r"><code>head(dat)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6NSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI2IHggNSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJvVlNzVTdETUJCMTB5U2xrVnFRK0FFV3hOUWcyakl4a0NpSUJTU3FabWpGaE5PbWJkVFVqaHhISUNiNEJqWm1Sc1RJRC9BamZBZERnKzNZb1VSSVpQQzk5KzR1NTd2ejhHemNzOFlXQUtBTzlCbzdEUWFCNlEyT3VzZGRBSFNOc1JyUVFaUGJPK2JmWllESDdQQXc2V2k0TVF6Z0NrcHFNcG91WWVrazBUMUdpbTY1WkFsUkNsUEpMUS9HMFF3VEZKVVJIbzR4Z1ZOY3FhSzVseVc2S05GMWlZWUtlVzZKcmlyL01IeWMwWVVrK2loTTZSLzRueUFBMnFMSjRjazduNVc3Ly9vbTdEam9POXllbng0SS92anh2TWV0ZitpRDRoTjV6czJuSUU2dkVKMlZ0Q09uc0U4dmhSMDRNdTNYRWd3RVYyRXEyektVbUZKSVEwbnFNQWpVSmtnNGp6QlNvMDV3a3NXUS9pZ0d4UlRHbFFwTmdtOXRWYVhGeC9qQWpqelB2NnBYbWJBOXE2c28wWnBDQ3UwWllmbU1yU3NwRFp6dzhpeEoyM3hJNVFzakZXRTdRL3dtMDg1a2thRmxwODhMQ0hmeHRTUTJON0JSbE5UeXlvek1FTTBqcElaa3NCY2J4cEswV2NlaVlUc2hFVkxidHBpYTJzV0VwRExCc1ZKRWIyRDlEWmtFbWdkQUF3QUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["chr"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZS5yZW1vdmUodG1wX2ZpbGVuYW1lKVxuYGBgIn0= -->
+<pre class="r"><code>file.remove(tmp_filename)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaWxlLnJlbW92ZSh0bXBfZmlsZW5hbWUpIDpcbiAgY2Fubm90IHJlbW92ZSBmaWxlICdDOlxcVXNlcnNcXGxmaW1hXFxBcHBEYXRhXFxMb2NhbFxcVGVtcFxcUnRtcG9qM2ZkQVxcZmlsZTJmYTA1MDA1YmM5JywgcmVhc29uICdQZXJtaXNzaW9uIGRlbmllZCdcbiJ9 -->
+<pre><code>Warning in file.remove(tmp_filename) :
+  cannot remove file &#39;C:\Users\lfima\AppData\Local\Temp\Rtmpoj3fdA\file2fa05005bc9&#39;, reason &#39;Permission denied&#39;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
+<pre><code>[1] FALSE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRhdGEgV3JhbmdsaW5nIC0gU2VjdGlvbiAwMSINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQojIERhdGEgaW1wb3J0DQoNCkdJVCBMT0NBTCBGT0xERVIgOiAvYy9Vc2Vycy9sZmltYS9Eb2N1bWVudHMvZWR4LzA2X0RhdGEgV3JhbmdsaW5nIDxicj4NCkdJVCBSRU1PVEUgVVBTVFJFQU06IGh0dHBzOi8vZ2l0aHViLmNvbS9sZmltYWRhL2RhdGF3cmFuZ2xpbmcgPGJyPg0KDQoNCiMjIFZlcmlmaWNhciBhcnF1aXZvcyBlbSBhbGd1bSBwYWNvdGUgYmFpeGFkbw0KYGBge3J9DQpwYWNrYWdlX3BhdGggPC0gc3lzdGVtLmZpbGUoImV4dGRhdGEiLCBwYWNrYWdlPSJkc2xhYnMiKQ0KbGlzdC5maWxlcyhwYWNrYWdlX3BhdGgpDQpgYGANCiMjIENvcGlhciBlc3RlcyBkYWRvcyBwYXJhIGFsZ3VtIGRpcmV0b3JpbyBwcm9wcmlvDQpVdGlsIHBhcmEgbW9kaWZpY2FyIGRhZG9zIGUgcmVhbGl6YXIgYW5hbGlzZXMgPGJyPg0KMS4gVmVyaWZpY2FyIGRpcmV0b3JpbyBhdHVhbA0KYGBge3J9DQpnZXR3ZCgpDQpgYGANCjIuIENyaWFyIHVtIGRpcmV0b3JpbyAiZGF0YSINCmBgYHt9DQpGZXJuYW5kbyBJbWFkYUBMQVBUT1AtVTNINVM2NE8gTUlOR1c2NCB+L0RvY3VtZW50cy9lZHgvMDZfRGF0YSBXcmFuZ2xpbmcvU2VjdGlvbiAwMSBEYXRhIEltcG9ydCAobWFzdGVyKQ0KJCBta2RpciBkYXRhDQpgYGANCg0KMy4gQ29waWFyIG9zIGRhZG9zIGRlICoqTXVyZGVycy5jc3YqKiBwYXJhIGEgcGFzdGEgImRhdGEiDQpgYGB7cn0NCmRhdGFmaWxlIDwtICJtdXJkZXJzLmNzdiINCmRlc3RpbnkgPC0gZmlsZS5wYXRoKGdldHdkKCksICJkYXRhIiwgZGF0YWZpbGUpDQpvcmlnaW4gPC0gZmlsZS5wYXRoKHBhY2thZ2VfcGF0aCwgZGF0YWZpbGUpDQoNCnByaW50IChwYXN0ZSgiUGF0aCBEZXN0aW5vOiAiICwgZGVzdGlueSkpDQpwcmludCAocGFzdGUoIlBhdGggQXJxdWl2byBPcmlnZW06ICIgLCBvcmlnaW4pKQ0KDQpgYGANCmBgYHtyfQ0KZmlsZS5jb3B5KG9yaWdpbiwgZGVzdGlueSkNCmBgYA0KYGBge30NCkZlcm5hbmRvIEltYWRhQExBUFRPUC1VM0g1UzY0TyBNSU5HVzY0IH4vRG9jdW1lbnRzL2VkeC8wNl9EYXRhIFdyYW5nbGluZy9TZWN0aW9uIDAxIERhdGEgSW1wb3J0IChtYXN0ZXIpDQokIGxzDQonMDZfMDFfRGF0YSBJbXBvcnQuUm1kJyAgIGRhdGENCg0KRmVybmFuZG8gSW1hZGFATEFQVE9QLVUzSDVTNjRPIE1JTkdXNjQgfi9Eb2N1bWVudHMvZWR4LzA2X0RhdGEgV3JhbmdsaW5nL1NlY3Rpb24gMDEgRGF0YSBJbXBvcnQgKG1hc3RlcikNCiQgY2QgZGF0YS8NCg0KRmVybmFuZG8gSW1hZGFATEFQVE9QLVUzSDVTNjRPIE1JTkdXNjQgfi9Eb2N1bWVudHMvZWR4LzA2X0RhdGEgV3JhbmdsaW5nL1NlY3Rpb24gMDEgRGF0YSBJbXBvcnQvZGF0YSAobWFzdGVyKQ0KJCBscw0KbXVyZGVycy5jc3YNCmBgYA0KDQoNCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRhdGEgV3JhbmdsaW5nIC0gU2VjdGlvbiAwMSINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQojIERhdGEgaW1wb3J0DQoNCkdJVCBMT0NBTCBGT0xERVIgOiAvYy9Vc2Vycy9sZmltYS9Eb2N1bWVudHMvZWR4LzA2X0RhdGEgV3JhbmdsaW5nIDxicj4NCkdJVCBSRU1PVEUgVVBTVFJFQU06IGh0dHBzOi8vZ2l0aHViLmNvbS9sZmltYWRhL2RhdGF3cmFuZ2xpbmcgPGJyPg0KDQoNCiMjIFZlcmlmaWNhciBhcnF1aXZvcyBlbSBhbGd1bSBwYWNvdGUgYmFpeGFkbw0KYGBge3J9DQpwYWNrYWdlX3BhdGggPC0gc3lzdGVtLmZpbGUoImV4dGRhdGEiLCBwYWNrYWdlPSJkc2xhYnMiKQ0KbGlzdC5maWxlcyhwYWNrYWdlX3BhdGgpDQpgYGANCiMjIENvcGlhciBlc3RlcyBkYWRvcyBwYXJhIGFsZ3VtIGRpcmV0b3JpbyBwcm9wcmlvDQpVdGlsIHBhcmEgbW9kaWZpY2FyIGRhZG9zIGUgcmVhbGl6YXIgYW5hbGlzZXMgPGJyPg0KMS4gVmVyaWZpY2FyIGRpcmV0b3JpbyBhdHVhbA0KYGBge3J9DQpnZXR3ZCgpDQpgYGANCjIuIENyaWFyIHVtIGRpcmV0b3JpbyAiZGF0YSINCmBgYHt9DQpGZXJuYW5kbyBJbWFkYUBMQVBUT1AtVTNINVM2NE8gTUlOR1c2NCB+L0RvY3VtZW50cy9lZHgvMDZfRGF0YSBXcmFuZ2xpbmcvU2VjdGlvbiAwMSBEYXRhIEltcG9ydCAobWFzdGVyKQ0KJCBta2RpciBkYXRhDQpgYGANCg0KMy4gQ29waWFyIG9zIGRhZG9zIGRlICoqTXVyZGVycy5jc3YqKiBwYXJhIGEgcGFzdGEgImRhdGEiDQpgYGB7cn0NCmRhdGFmaWxlIDwtICJtdXJkZXJzLmNzdiINCmRlc3RpbnkgPC0gZmlsZS5wYXRoKGdldHdkKCksICJkYXRhIiwgZGF0YWZpbGUpDQpvcmlnaW4gPC0gZmlsZS5wYXRoKHBhY2thZ2VfcGF0aCwgZGF0YWZpbGUpDQoNCnByaW50IChwYXN0ZSgiUGF0aCBEZXN0aW5vOiAiICwgZGVzdGlueSkpDQpwcmludCAocGFzdGUoIlBhdGggQXJxdWl2byBPcmlnZW06ICIgLCBvcmlnaW4pKQ0KDQpgYGANCmBgYHtyfQ0KZmlsZS5jb3B5KG9yaWdpbiwgZGVzdGlueSkNCmBgYA0KYGBge30NCkZlcm5hbmRvIEltYWRhQExBUFRPUC1VM0g1UzY0TyBNSU5HVzY0IH4vRG9jdW1lbnRzL2VkeC8wNl9EYXRhIFdyYW5nbGluZy9TZWN0aW9uIDAxIERhdGEgSW1wb3J0IChtYXN0ZXIpDQokIGxzDQonMDZfMDFfRGF0YSBJbXBvcnQuUm1kJyAgIGRhdGENCg0KRmVybmFuZG8gSW1hZGFATEFQVE9QLVUzSDVTNjRPIE1JTkdXNjQgfi9Eb2N1bWVudHMvZWR4LzA2X0RhdGEgV3JhbmdsaW5nL1NlY3Rpb24gMDEgRGF0YSBJbXBvcnQgKG1hc3RlcikNCiQgY2QgZGF0YS8NCg0KRmVybmFuZG8gSW1hZGFATEFQVE9QLVUzSDVTNjRPIE1JTkdXNjQgfi9Eb2N1bWVudHMvZWR4LzA2X0RhdGEgV3JhbmdsaW5nL1NlY3Rpb24gMDEgRGF0YSBJbXBvcnQvZGF0YSAobWFzdGVyKQ0KJCBscw0KbXVyZGVycy5jc3YNCmBgYA0KDQojIFBhY290ZXMgcmVhZHIgZSByZWFkeGwNCg0KTGVyIG8gYXJxdWl2byBtdXJkZXJzLmNzdg0KYGBge3J9DQpsaWJyYXJ5IChyZWFkeGwpDQpsaWJyYXJ5IChyZWFkcikNCmBgYA0KDQpgYGB7cn0NCnJlYWRfY3N2KGRlc3RpbnksIG5fbWF4PTMpDQpgYGANCiMjIERhdGEgRnJhbWUgdnMgVGFibGUNCmBgYHtyfQ0KeCA8LSByZWFkX2NzdihkZXN0aW55KSAjVGFiZWxhDQp5IDwtIHJlYWQuY3N2KGRlc3RpbnkpICNEYXRhIEZyYW1lDQoNCmNsYXNzKHgpDQpjbGFzcyh5KQ0KYGBgDQpBcyBkaWZlcmVuw6dhcyBzw6NvIHN1dGlzLCB0YWx2ZXogYWxndW1hIGZ1bsOnw6NvIG5vIHJvZGUgZGV2aWRvIGEgaXNzbywgbWFzIMOpIHBvc3NpdmVsIGNvbnZlcnRlciB1bSB0aXBvIGVtIG91dHJvDQoNCiMjIERvd25sb2FkaW5nIEZpbGVzIGZyb20gdGhlIGludGVybmV0DQoNCsOJIHBvc3PDrXZlbCB1dGlsaXphciBkYWRvcyBxdWUgZXN0w6NvIG5hIGludGVybmV0IHNlbSBiYWl4YS1sb3MNCmBgYHtyfQ0KdXJsIDwtICJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vbGZpbWFkYS9kYXRhd3JhbmdsaW5nL21hc3Rlci9TZWN0aW9uJTIwMDElMjBEYXRhJTIwSW1wb3J0L2RhdGEvbXVyZGVycy5jc3YiDQpkYiA8LSByZWFkX2Nzdih1cmwsIG5fbWF4PTMpDQpoZWFkKGRiKQ0KYGBgDQoNClBhcmEgZmF6ZXIgbyBkb3dubG9hZCwgbyBhcnF1aXZvIGZpY2Fyw6Egbm8gbWVzbW8gbHVnYXIgcXVlIG8gY8OzZGlnbyBlbSBSIHNlIHVtIHBhdGggYWJzb2x1dG8gbsOjbyBmb3IgaW5mb3JtYWRvDQpgYGB7cn0NCnVybCA8LSAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xmaW1hZGEvZGF0YXdyYW5nbGluZy9tYXN0ZXIvU2VjdGlvbiUyMDAxJTIwRGF0YSUyMEltcG9ydC9kYXRhL211cmRlcnMuY3N2Ig0KZGF0IDwtIHJlYWRfY3N2KHVybCwgc2hvd19jb2xfdHlwZXMgPSBGQUxTRSkNCmRvd25sb2FkLmZpbGUodXJsLCAiQzovVXNlcnMvbGZpbWEvRG93bmxvYWRzL211cmRlcnMuY3N2IikNCmBgYA0KUGFyYSB1c2FyIGJhaXhhciBkYWRvcywgdXRpbGl6YS1sb3MgZSBkZXBvaXMgYXBhZ8OhLWxvcywgw6kgcG9zc8OtdmVsIHV0aWxpemFyIHRlbXBmaWxlKCkgZSB0ZW1wZGlyKCkNCmBgYHtyfQ0KdGVtcGZpbGUoKQ0KdG1wX2ZpbGVuYW1lIDwtIHRlbXBmaWxlKCkNCmRvd25sb2FkLmZpbGUodXJsLCB0bXBfZmlsZW5hbWUpDQpkYXQgPC0gcmVhZF9jc3YodG1wX2ZpbGVuYW1lKQ0KaGVhZChkYXQpDQpmaWxlLnJlbW92ZSh0bXBfZmlsZW5hbWUpDQpgYGANCg0KDQoNCg0KDQoNCg0KDQo=</div>
 
 
 
