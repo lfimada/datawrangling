@@ -1,0 +1,168 @@
+---
+title: "Section_02 Exercises"
+output: html_notebook
+---
+
+A collaborator sends you a file containing data for two years of average race finish times, "times.csv":
+
+age_group,2015_time,2015_participants,2016_time,2016_participants
+20,3:46,54,3:22,62
+30,3:50,60,3:43,58
+40,4:39,29,3:49,33
+50,4:48,10,4:59,14
+You read in the data file:
+
+d <- read_csv("times.csv")
+```{r}
+library (tidyverse)
+```
+
+```{r}
+d <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/times.csv")
+```
+Tidying data:
+```{r} 
+d %>% gather(key = "key", value = "value", -age_group) %>% separate(key, into = c("year", "variable_name"), sep = "_") %>% spread(variable_name, value = value)
+```
+
+---
+
+
+You are in the process of tidying some data on heights, hand length, and wingspan for basketball players in the draft. Currently, you have the following:
+
+    > head(stats)
+key               value
+allen_height      75
+allen_hand_length 8.25
+allen_wingspan	  79.25
+bamba_height      83.25
+bamba_hand_length 9.75
+bamba_wingspan    94
+  
+Select all of the correct commands below that would turn this data into a “tidy” format with columns "height", "hand_length" and "wingspan".
+```{r}
+n <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/nba.csv")
+n
+```
+
+```{r}
+n %>% separate(col = key, into = c("name", "variables"), sep = "_")
+```
+```{r}
+n %>% separate(col = key, into = c("name", "variables"), sep = "_", extra = "merge") %>% spread(key = variables, value = value)
+```
+
+## Assessment 02
+
+Use the following libraries for these questions:
+
+
+```{r}
+library(tidyverse)
+library(dslabs)
+library (ggplot2)
+```
+
+
+### Question 9
+1 point possible (graded)
+Examine the built-in dataset co2. This dataset comes with base R, not dslabs - just type co2 to access the dataset.
+
+```{r}
+co2
+```
+
+### Question 10
+1 point possible (graded)
+Run the following command to define the co2_wide object:
+
+```{r}
+co2_wide <- data.frame(matrix(co2, ncol = 12, byrow = TRUE)) %>% 
+      setNames(1:12) %>%
+    mutate(year = as.character(1959:1997))
+head(co2_wide)
+```
+
+Use the gather() function to make this dataset tidy. Call the column with the CO2 measurements co2 and call the month column month. Name the resulting object co2_tidy.
+
+Which code would return the correct tidy format?
+```{r}
+co2_tidy <- co2_wide %>% gather(key = "month",value = "co2","1":"12")
+co2_tidy
+```
+
+Question 11
+1 point possible (graded)
+Use co2_tidy to plot CO2 versus month with a different curve for each year:
+
+```{r}
+co2_tidy %>% ggplot(aes(as.numeric(month), co2, color = year)) + geom_line()
+
+```
+
+What can be concluded from this plot? <br>
+CO2 concentrations are highest around May and the yearly average increased from 1959 to 1997.<br>
+
+---
+
+### Question 12
+Load the admissions dataset from dslabs, which contains college admission information for men and women across six majors, and remove the applicants percentage column:
+
+```{r}
+library(dslabs)
+data(admissions)
+dat <- admissions %>% select(-applicants)
+head(dat)
+```
+
+Your goal is to get the data in the shape that has one row for each major, like this:
+```{}
+major  men   women
+A      62    82		
+B      63    68		
+C      37    34		
+D      33    35		
+E      28    24		
+F       6     7	
+```
+Which command could help you to wrangle the data into the desired format?
+```{r}
+dat %>% spread (gender, value = admitted)
+```
+
+---
+
+### Question 13
+Now use the admissions dataset to create the object tmp, which has columns major, gender, key and value:
+
+```{r}
+tmp <- gather(admissions, key, value, admitted:applicants)
+tmp
+```
+    
+
+Combine the key and gender and create a new column called column_name to get a variable with the following values: admitted_men, admitted_women, applicants_men and applicants_women. Save the new data as tmp2.
+
+Which command could help you to wrangle the data into the desired format?
+```{r}
+tmp2 <- tmp %>% unite(column_name, key, gender)
+tmp2
+```
+
+---
+
+### Question 14
+1 point possible (graded)
+Which function can reshape tmp2 to a table with six rows and five columns named major, admitted_men, admitted_women, applicants_men and applicants_women?
+
+```{}
+major   admitted_men    admitted_women    applicants_men    applicants_women
+A                              
+B
+```
+
+```{r}
+tmp2 %>% spread(key = column_name, value = value)
+```
+
+

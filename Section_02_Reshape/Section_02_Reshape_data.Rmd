@@ -138,5 +138,41 @@ tidy_two %>% separate(name, c("year", "name"), sep="_", extra="merge", convert =
 tidy_two %>% separate(name, c("year", "name"), sep="_", extra="merge", convert = TRUE) %>% pivot_wider (names_from = name, values_from = value)
 ```
 
+---
 
+## Unite
+
+Supondo a seguinte separação incorreta devido ao '_' em life_expectancy 
+```{r}
+
+two_variable <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/two_v.csv", show_col_types = FALSE)
+two_variable <- two_variable %>% pivot_longer(-country)
+
+head (two_variable %>%separate(name, c("year", "name_1", "name_2"),sep = "_", fill = "right", convert = TRUE))
+
+```
+
+É possível juntar as variáveis name_1 e name_2 em uma única variável
+
+```{r}
+head (two_variable %>%separate(name, c("year", "name_1", "name_2"),sep = "_", fill = "right", convert = TRUE) %>%  unite(variable_name, name_1, name_2, sep="_"))
+
+```
+Agora usamos pivot_longer
+```{r}
+two_variable %>%separate(name, c("year", "name_1", "name_2"),sep = "_", fill = "right", convert = TRUE) %>%  unite(variable_name, name_1, name_2, sep="_") %>% pivot_wider(names_from = "variable_name", values_from = value) %>% rename(fertility = fertility_NA)
+```
+
+---
+
+##Gather e Spread
+```{r}
+fertility <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/fertility.csv")
+fertility_tidy <- fertility %>% gather(key = year, value = value, '1960':'2015')
+fertility_tidy
+```
+
+```{r}
+fertility_tidy %>% spread(year, value)
+```
 
