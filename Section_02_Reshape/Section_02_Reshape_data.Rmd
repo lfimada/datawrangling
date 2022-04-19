@@ -2,8 +2,141 @@
 title: "Section 02 - Reshape Data"
 output: html_notebook
 ---
+Bibliotecas necessárias
+```{r}
+library (tidyverse)
+library (dslabs) ##tabela gapminder
+```
+
+---
+
+Tabela utilizada até agora:
+```{r}
+data(gapminder)
+head (gapminder)
+```
 
 ```{r}
+data <- gapminder %>% filter(country == "South Korea" | country == "Germany") %>% select (country, year, life_expectancy, fertility)
+data
+```
+Estes dados estão arrumados, chamados "tidy" <br>
+Nesta seção iremos ver funcoes da biblioteca tidyr, incluida no pacote tidyverse para facilitar a arrumação dos dados <br>
+
+---
+
+## Tidy Data
+**Definição: Cada linha representa uma observação de varias variaveis diferentes**<br>
+Inicialmente os dados não estão como na tabela acima. <br>
+Os dados originais estão conforme o arquivo do pacote dslabs
+
+```{r}
+file_path <- system.file("extdata", package = "dslabs")
+list.files(file_path)
+```
+Copiar o arquivo "life-expectancy-and-fertility-two-countries-example" para o diretorio local
+```{r, warning=FALSE}
+#1 .Path arquivo original
+origin <- file.path(file_path, "fertility-two-countries-example.csv")
+
+
+#2. Momear arquivo destino e setar sua path
+local_filename <- "fertility.csv"
+setwd("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data")
+destiny <- file.path(getwd(), local_filename)
+```
+
+```{r, warning=FALSE}
+#3. Copiar arquivos
+file.copy(origin, destiny)
+```
+Verificando dados do arquivo original:
+```{r,  warning=FALSE}
+data <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/fertility.csv")
+data
+```
+**Nesta tabela, temos multiplas observações em uma mesma linha, então este dado não esta arrumado (tidy)**
+
+---
+
+## Pivot Longer
+```{r}
+data %>% select(country, '1960':'1965')
+```
+A tabela está no formato wide <br>
+
+---
+Utilizando pivot_longer
+
+```{r}
+head (data %>% pivot_longer ('1960':'2015'))
+```
+Outra maneira de utilizar pivot_longer
+```{r}
+head (data %>% pivot_longer (-country)) #country é a unica coluna que nao foi alterada
+```
+
+
+```{r}
+head (data %>% pivot_longer (-country, names_to = "year", values_to = "fertility_rate")) #country é a unica coluna que nao foi alterada
+```
+**Notar que os valores dos anos estão viraram caracteres**
+```{r}
+head (data %>% pivot_longer (-country, names_to = "year", values_to = "fertility_rate", names_transform = list(year = as.numeric)))
+```
+
+```{r}
+head (data %>% pivot_longer (-country, names_to = "year", values_to = "fertility_rate") %>% mutate(year = as.numeric(year)))
+```
+Com os dados arrumados é possível plotar o gráfico conforme já realizado anteriormente:
+```{r}
+library (ggplot2)
+
+tidy_data <- data %>% pivot_longer (-country, names_to = "year", values_to = "fertility_rate") %>% mutate(year = as.numeric(year))
+
+ggplot(tidy_data, aes(x = year, y = fertility_rate, color = country)) + geom_point()
+```
+
+---
+
+## Pivot wider
+Esta função transforma linhas de dados em colunas
+Ela é util para transformação intermerdiarias de dados
+```{r}
+new_wide_data <- tidy_data %>% pivot_wider(names_from = year, values_from = fertility_rate)
+select(new_wide_data, country, `1960`:`1967`)
+```
+
+
+## Separate
+
+Agora vamos trabalhar com um exemplo mais complexo
+
+```{r, warning=FALSE}
+two_variable <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/two_v.csv", show_col_types = FALSE)
+two_variable
 
 ```
+Aqui temos:
+-2 variaveis: fertility e life_expectancy<br>
+-os anos estão nos nomes das variaveis<br>
+
+Usando pivot_longer
+```{r}
+tidy_two <- two_variable %>% pivot_longer(-country)
+head (tidy_two)
+```
+
+**Utilizando separate:**<br>
+Separate(column_name, new_column_names, caracter_separador)
+```{r}
+tidy_two %>% separate(name, c("year", "name"), sep="_", extra="merge", convert = TRUE) 
+```
+
+
+```{r}
+tidy_two %>% separate(name, c("year", "name"), sep="_", extra="merge", convert = TRUE) %>% pivot_wider (names_from = name, values_from = value)
+```
+
+
 
