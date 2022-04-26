@@ -6,6 +6,9 @@ Bibliotecas necessárias
 ```{r}
 library (tidyverse)
 library (dslabs) ##tabela gapminder
+library (ggplot2)
+library(ggrepel)
+
 ```
 
 ---
@@ -165,7 +168,7 @@ two_variable %>%separate(name, c("year", "name_1", "name_2"),sep = "_", fill = "
 
 ---
 
-##Gather e Spread
+## Gather e Spread
 ```{r}
 fertility <- read_csv("C:/Users/lfima/Documents/edx/06_Data Wrangling/Section_02_Reshape/data/fertility.csv")
 fertility_tidy <- fertility %>% gather(key = year, value = value, '1960':'2015')
@@ -178,6 +181,81 @@ fertility_tidy %>% spread(year, value)
 
 ## 2.1 Combining tables
 
+Quando realizamos um trabalho de análise de dados, em geral combinam-se bases de dados diferentes para verificar e analisar correlações.<br>
+
+
+## Joins
+Cada tabela possui estados diferentes agora, alguns em comum, outros não. <br>
+
+-- Estados somente tab1 :Arkansa, Colorado <br>
+-- Estados somente tab2:Connecticut, Delaware <br>
+-- Estados em tab1 e tab2: Alabama, Alaska, Arizona, California <br>
+
+Reordenando pela ordem alfabetica os estados (os dados estao ordenados pelo numero de votos eleitorais)
+```{r}
+results_us_election_2016_2 <- data.frame(state = results_us_election_2016$state[order(results_us_election_2016$state)], electoral_votes = results_us_election_2016$electoral_votes[order(results_us_election_2016$state)])
+results_us_election_2016_2
+```
+
+
+```{r}
+tab1 <- slice(murders, 1:6) %>% select(state, population)
+tab1
+tab2 <- slice(results_us_election_2016_2, c(1:3, 5, 7:8))
+tab2
+```
+
+## Left_join
+```{r}
+left_join(tab1, tab2, by = "state")
+``` 
+-- Os valores de tab1 ficam inalterados <br>
+-- Alabama, Alaska, Arizona e California aparecem em tab2 <br>
+
+---
+
+## Right Join
+```{r}
+right_join(tab1, tab2, by = "state")
+```
+-- Os valores de tab2 ficam inalterados <br>
+-- Alabama, Alaska, Arizona e California aparecem em tab1 <br>
+
+---
+## Full Join
+```{r}
+full_join(tab1, tab2, by = "state")
+```
+-- Junta todos os estados em uma mesma tabela, quando o valor não existir, adiciona NA<br>
+
+
+---
+
+## Inner join
+```{r}
+inner_join(tab1, tab2, by = "state")
+```
+Pega somente os valores que estão em tab1 e tab2<br>
+
+---
+
+## Semi_join
+```{r}
+semi_join(tab1, tab2, by = "state")
+```
+-- Não combina tabelas<br>
+-- Mantem as colunas de tab1<br>
+-- Somente os valores que estão em tab1 e tab2 são mantidos<br>
+
+---
+
+## Anti_join
+```{r}
+anti_join(tab1, tab2, by="state")
+```
+-- Não combina tabelas<br>
+-- Mantem as colunas de tab1<br>
+-- Somente os valores que estão em tab1 são mantidos<br>
 
 
 
