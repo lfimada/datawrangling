@@ -7,7 +7,7 @@ Bibliotecas necessárias
 library (tidyverse)
 library (dslabs) ##tabela gapminder
 library (ggplot2)
-library(ggrepel)
+library (dplyr)
 
 ```
 
@@ -256,6 +256,114 @@ anti_join(tab1, tab2, by="state")
 -- Não combina tabelas<br>
 -- Mantem as colunas de tab1<br>
 -- Somente os valores que estão em tab1 são mantidos<br>
+
+
+## Binding
+
+-- Diferente das funcoes de join que juntam as tabelas através de uma coluna em comum (states) nos exemplos, as funcoes de binding somente juntam as tabelas
+
+### bind_cols
+
+```{r}
+data("murders")
+data ("results_us_election_2016")
+tab <- left_join(murders, results_us_election_2016_2, by = "state")
+head(tab)
+```
+
+```{r}
+tab1 <- tab[,c(1:2,4) ]
+tab1 <- slice(tab1, 1:3)
+tab1
+```
+
+```{r}
+tab2 <- tab[,5:6]
+tab2 <- slice(tab2, 4:6)
+tab2
+```
+
+```{r}
+new_tab <- bind_cols(tab1, tab2)
+new_tab
+```
+-- Deve ter o mesmo numero de linhas
+-- As colunas somente devem são colocadas lado a lado
+
+### bind_rows
+
+```{r}
+new_tab1 <- slice(new_tab, 1)
+new_tab1
+new_tab2 <- slice(new_tab, 3)
+new_tab2
+
+```
+
+```{r}
+bind_rows(new_tab2, new_tab1)
+```
+-- Notar que a ordem se altera
+
+---
+
+## Set Operators
+
+**Funcionam por linhas** <br>
+**Union, Intersect** <br>
+
+# Dados{.tabset}
+## Tab1
+```{r}
+tab1 <- slice(murders, 1:6) %>% select(state, population)
+tab1
+```
+
+## Tab2
+```{r}
+tab2 <- slice(murders, 5:9) %>% select(state, population)
+tab2
+```
+
+
+
+
+**Estados em comum: California, Colorado**<br>
+**Estados somente em tab1: Alabama, Alaska, Arizona, Arkansas**<br>
+**Estados somente em tab2: Connecticut, Delaware, District of Columbia**<br>
+
+### Union
+```{r}
+union(tab1, tab2)
+```
+
+
+### Intersect
+```{r}
+intersect(tab1, tab2)
+```
+
+### Setdiff
+```{r}
+setdiff(tab1, tab2)
+```
+-- Mostra tab1 - tab2, ou seja, itens exclusivos de tab1<br>
+
+```{r}
+setdiff(tab2, tab1)
+```
+-- Mostra tab2 - tab1, ou seja, itens exclusivos de tab2<br>
+
+### setequal()
+```{r}
+setequal(tab1, tab2)
+setequal(tab1[6:5,], tab2[1:2,]) #notar que a ordem foi invertida neste caso
+#tab1[6:5,] 
+#tab2[1:2,]
+```
+-- Verifica se os conjuntos são identicos não importando a ordem
+
+
 
 
 

@@ -165,4 +165,36 @@ B
 tmp2 %>% spread(key = column_name, value = value)
 ```
 
+## Section 2.2
+```{r}
+library (dplyr)
+```
+
+Question 1
+1 point possible (graded)
+You have created data frames tab1 and tab2 of state population and election data, similar to our module videos:
+
+```{r}
+tab1 <- data.frame(state = c("Alabama", "Alaska", "Arizona", "Delaware","District of Columbia"), population = c(4779736,710231,6392017, 897934, 601723  ))
+tab1
+```
+
+```{r}
+tab2 <- data.frame(state = c("Alabama", "Alaska", "Arizona", "California","Colorado", "Connecticut"), population = c(9,3,11, 55, 9,7  ))
+tab2
+```
+What are the dimensions of the table dat, created by the following command?
+dat <- left_join(tab1, tab2, by = “state”)
+```{r}
+dim(left_join(tab1, tab2, by = "state"))
+```
+Question 2
+1 point possible (graded)
+We are still using the tab1 and tab2 tables shown in question 1. What join command would create a new table “dat” with three rows and two columns?
+      
+```{r}
+dim(semi_join(tab1, tab2, by = "state") )
+```
+
+
 
