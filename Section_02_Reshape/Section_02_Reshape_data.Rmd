@@ -312,21 +312,18 @@ bind_rows(new_tab2, new_tab1)
 **Funcionam por linhas** <br>
 **Union, Intersect** <br>
 
-# Dados{.tabset}
-## Tab1
+# Dados
+### Tab1
 ```{r}
 tab1 <- slice(murders, 1:6) %>% select(state, population)
 tab1
 ```
 
-## Tab2
+### Tab2
 ```{r}
 tab2 <- slice(murders, 5:9) %>% select(state, population)
 tab2
 ```
-
-
-
 
 **Estados em comum: California, Colorado**<br>
 **Estados somente em tab1: Alabama, Alaska, Arizona, Arkansas**<br>
@@ -362,6 +359,49 @@ setequal(tab1[6:5,], tab2[1:2,]) #notar que a ordem foi invertida neste caso
 #tab2[1:2,]
 ```
 -- Verifica se os conjuntos são identicos não importando a ordem
+
+
+## Web Scraping
+
+O conjunto de dados da tabela "murders" veio da Wikipedia, vamos verificar como analisar o código fonte para obter os dados que queremos
+
+```{r}
+library(rvest)
+url <- "https://en.wikipedia.org/wiki/Murder_in_the_United_States_by_state"
+h <- read_html(url)
+class(h)
+h
+```
+Obs. Não é possível visualizar o código fonte dessa forma, imprimindo h, h[1] etc <br>
+
+Analisando o código fonte da página, 
+
+```{r}
+tabs <- h %>% html_nodes("table")
+tab <- tabs[[2]]
+tab
+```
+**Cada elemento retornado em tabs é um conjunto de nodes (pode ter somente 1 elemento)** <br>
+**Pega-se o primeiro elemento do conjunto de nodes 2 usando-se [[2]]** <br>
+**Para transformar em tabela é ideal utilizar somente 1 node**<br>
+```{r}
+class (tabs)
+class (tabs[2])
+class (tabs[[2]])
+```
+
+
+```{r}
+tab <- html_table(tab)
+#class(tab)
+```
+
+```{r}
+tab <- tab %>% setNames(c("state", "population", "total", "murders", "gun_murders", "gun_ownership", "total_rate", "murder_rate", "gun_murder_rate"))
+head(tab)
+```
+
+
 
 
 
