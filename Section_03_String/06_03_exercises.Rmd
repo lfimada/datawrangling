@@ -1,0 +1,117 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+Question 4
+1 point possible (graded)
+You have a data frame of monthly sales and profits in R:
+```{}
+Month     Sales     Profit 
+<chr>     <chr>     <chr>  
+January   $128,568  $16,234
+February  $109,523  $12,876
+March     $115,468  $17,920
+April     $122,274  $15,825
+May       $117,921  $15,437
+```
+
+Which of the following commands could convert the sales and profits columns to numeric? Select all that apply.
+
+```{r}
+#create df
+dat <- data.frame(Month = c("Jan", "Feb", "Mar", "Apr", "May"), Sales = c("$128,568", "$109,523","$115,468","$122,274","$117,921"), Profit = c("$16,234","$12,876", "$17,920","$15,825","$15,437"))
+dat
+```
+```{r}
+a <- str_replace_all(dat$Sales, "\\$", "") 
+a
+```
+
+
+
+convert the sales and profits columns to numeric
+```{r}
+
+dat %>% mutate_at(2:3, parse_number)
+```
+```{r}
+dat %>% mutate_at(2:3, funs(str_replace_all(., c("\\$|,"), ""))) %>%   mutate_at(2:3, as.numeric)
+```
+### Question 12
+1 point possible (graded)
+In our example, we use the following code to detect height entries that do not match our pattern of x’y”:
+
+```{r, include=FALSE}
+library (tidyverse)
+library (dslabs)
+library (rvest)
+library (htmlwidgets)
+```
+
+```{r}
+data("reported_heights")
+```
+
+
+```{r}
+not_inches <- function(x, smallest = 50, tallest = 84) {
+  inches <- suppressWarnings(as.numeric(x))
+  ind <- is.na(inches) | inches < smallest | inches > tallest 
+  ind
+}
+```
+
+```{r}
+# identify entries with problems
+problems <- reported_heights %>% 
+  filter(not_inches(height)) %>%
+  .$height
+length(problems)
+```
+
+
+
+```{r}
+converted <- problems %>% 
+  str_replace("feet|foot|ft", "'") %>% 
+  str_replace("inches|in|''|\"", "") %>% 
+  str_replace("^([4-7])\\s*[,\\.\\s+]\\s*(\\d*)$", "\\1'\\2")
+
+
+
+pattern <- "^[4-7]\\s*'\\s*\\d{1,2}$"
+index <- str_detect(converted, pattern)
+converted[index]
+#converted[!index]
+```
+
+Which answer best describes the differences between the regex string we use as an argument in str_replace("^([4-7])\\s*[,\\.\\s+]\\s*(\\d*)$", "\\1'\\2") and the regex string in pattern <- "^[4-7]\\s*'\\s*\\d{1,2}$"?
+
+### Question 13
+1 point possible (graded)
+You notice a few entries that are not being properly converted using your str_replace() and str_detect() code:
+```{r}
+yes <- c("5 feet 7inches", "5 7")
+no <- c("5ft 9 inches", "5 ft 9 inches")
+s <- c(yes, no)
+
+converted <- s %>% 
+  str_replace("\\s*(feet|foot|ft)\\s*", "'") %>% 
+  str_replace("\\s*(inches|in|''|\")\\s*", "") %>% 
+  str_replace("^([4-7])\\s*[,\\.\\s+]\\s*(\\d*)$", "\\1'\\2")
+
+converted
+
+#pattern <- "^[4-7]\\s*'\\s*\\d{1,2}$"
+#str_detect(converted, pattern)
+```
+
+      
+
+      
+
+
+    
+
+
+

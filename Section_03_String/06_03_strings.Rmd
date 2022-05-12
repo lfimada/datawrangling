@@ -1,0 +1,336 @@
+---
+title: "06_03 String Processing"
+output: html_notebook
+---
+
+
+```{r, include=FALSE}
+library (dplyr)
+library (tidyverse)
+library (dslabs)
+library (rvest)
+library (htmlwidgets)
+```
+
+```{r}
+url <- "https://en.wikipedia.org/wiki/Murder_in_the_United_States_by_state"
+p <- read_html(url)
+nodes <- html_nodes(p, "table")
+```
+
+---
+## Convertendo strings em numeros
+
+Population
+```{r}
+murders <- html_table(nodes[[2]])
+murders <- murders[,1:3]
+murders <- setNames(murders, c("State", "Population", "Murders"))
+murders
+```
+
+Direct conversion to numeric fails because of commas
+```{r}
+as.numeric(murders$Population)
+```
+Removendo virgulas #1
+```{r}
+#test <- str_remove(murders$Population, ",")    #remove first comma
+test <- str_remove_all(murders$Population, ",") #remove all commas
+test
+#as.numeric(test)
+```
+**Notar que existe um valor 12859995[5], se convertido em numero se tornara NA**
+
+```{r}
+#test2[13]
+test_1 <- str_replace(test, "\\[5\\]", "")
+test_1 <- as.numeric(test1)
+test_1
+```
+
+
+
+Removendo virgulas #2
+```{r}
+test_2 <- parse_number(murders$Population) ## parte da biblioteca readr
+test_2
+```
+```{r}
+identical(test_1, test_2)
+```
+
+## Converting Strings
+```{r}
+library (dplyr)
+library (dslabs)
+```
+
+
+
+```{r}
+data(reported_heights)
+
+reported_heights
+```
+
+Dessa quantidade de dados, a unidade padrão foi polegadas e somente número...vamos tentar descobrir quais dados nâo estâo dessa maneira <br>
+Algumas possibilidades: <br>
+- Escreverem explicitamente a unidade de medida 70in <br>
+- Colocarem em cm: 170 cm ou 170 (sabe-se que não são pés) <br>
+- Colocarem como pés e polegadas: 5'7''
+
+
+### Entradas inválidas
+O primeiro tratamento de strings serão nos itens que não são números <br>
+Para encontrá-los, vamos converter "height" em número e verificar quais sâo os NAs que aparecem
+```{r}
+heights <- reported_heights %>% mutate(height_num = as.numeric(.$height))
+heights[126:127,] 
+```
+Pode-se ver que height_num retorna NA quando o item não pode ser convertido em número. Esta é uma string que deve ser tratada. <br>
+Vamos filtrar os NAs de height_num
+```{r}
+heights %>% filter(is.na(height_num)==TRUE)
+```
+
+Agora temos uma lista com os dados a serem tratados!
+
+---
+### Valores que estão em cm ou pés
+Numeros que estão em cm estão na forma correta, porém a unidade esta errada <br>
+Vamos tentar identificar quais são esses casos<br>
+```{r}
+heights %>% filter(height_num < 50 |height_num > 84 )
+```
+
+---
+
+### Combinando em uma função
+
+```{r}
+not_inches <- function (x, small = 50, tall = 84) #x é uma string
+{
+  
+  num_x <- suppressWarnings(as.numeric(x))
+  ind <- is.na(num_x) | num_x < small | num_x > tall
+  ind
+}
+```
+
+```{r}
+problems <- reported_heights %>% filter(not_inches(height))
+problems
+```
+
+### str_detect
+```{r}
+head (filter(problems, str_detect(height, ",") == TRUE))
+```
+### str_subset
+```{r}
+str_subset(heights$height, ",")
+```
+
+**Podemos utilizar estas funções com expressões regulares ou regex**<br>
+
+### Verificando entradas com cm ou inches
+
+```{r}
+s <- "cm|inches"
+head (filter(problems, str_detect(height, s) == TRUE))
+```
+### Verificando entradas com cm ou inches e virgula
+
+```{r}
+s <- "cm|inches|,"
+filter(problems, str_detect(height, s) == TRUE)
+```
+
+
+### str_view
+Utilizando regex podemos simplificar o padrão a ser utilizado
+```{r}
+s <- "cm|inches|,"
+str_view(problems$height, s)
+```
+### Utilizando regex
+A forma mais comum de erro é um número estar na forma de pés e polegadas com diferentes separadores: <br>
+- x'y <br>
+- x'y" <br>
+- x.y <br>
+- x y <br>
+
+Uma extratégia é converter todo tipo de entrada para um único padrão <br>
+
+
+**Inicio de string ^ e final de string $** <br>
+** Inicialmente mapear as formas x'y" ** <br>
+```{r}
+pattern1 <- "^[4-7]'\\d{1,2}\"$"
+matches_1 <- nrow(filter(problems, str_detect(height, pattern1) == TRUE))
+#str_view_all(problems$height, pattern1)
+total <- nrow(problems)
+success_rate_1 <- matches_1/total
+print (success_rate_1)
+#filter(problems, str_detect(height, pattern1) == TRUE)
+```
+Atualmente estamos encontrando somente 5% dos casos <br>
+
+Exemplos de entradas que não são aceitas
+```{r}
+x <- str_detect(problems$height, pattern1)
+problems$height[!x][1:20]cv
+```
+
+
+### Melhorando
+
+Vamos remover as palavras feet, inches e tirar o " do final para as polegadas
+
+```{r}
+problems2 <- problems$height %>% 
+  str_replace("feet|ft|foot", "'") %>% # replace feet, ft, foot with ' 
+  str_replace("inches|in|''|\"", "") # remove all inches symbols
+problems2
+```
+
+Agora aplicando o regex removendo o " do final porque já foi removido
+
+```{r}
+pattern2 <- "^[4-7]'\\d{1,2}$"
+matches_2 <- sum((str_detect(problems2, pattern2) == TRUE))
+#str_view_all(problems2, pattern2)
+
+total <- length(problems2)
+success_rate_2 <- matches_2/total
+print (success_rate_2)
+#filter(problems, str_detect(height, pattern1) == TRUE)
+``` 
+Agora a taxa de detecção está em torno de 16% <br>
+
+Exemplos de entradas que não são aceitas atualmente<br>
+```{r}
+x <- str_detect(problems2, pattern2)
+problems2[!x][1:20]
+```
+
+Vamos realizar as seguintes melhorias: <br>
+1. Aceitar espaços estre os numeros 
+
+```{r}
+pattern3 <- "^[4-7]\\s*'\\s*\\d{1,2}$"
+matches_3 <- sum((str_detect(problems2, pattern3) == TRUE))
+#str_view_all(problems2, pattern3)
+#sum(matches_3)
+total <- length(problems2)
+success_rate_3 <- matches_3/total
+print (success_rate_3)
+```
+Exemplos de entradas nao tratadas atualmente<br>
+```{r}
+x <- str_detect(problems2, pattern3)
+problems2[!x][1:20]
+```
+## Entradas do tipo x.y, x,y e x y
+Uma proposta seria utilizar
+```{r}
+problems3 <- problems2 %>% str_replace("\\s|\\.|,|'", "'")
+problems3[1:20]
+```
+Para este exemplo, seria uma solução interessante<br>
+Um problema são entradas do tipo 70.5, que se tornaria 70'5<br> 
+
+Utilizaremos um outro tipo de solução, envolvendo grupos
+
+## Groups
+
+A ideia dessa solução é extrair somente a parte a numerica de uma expressão regular<br>
+Agrupa-las no grupo1: pés e no grupo2: polegadas <br>
+Extraindo somente o numeros, recriamos a string na forma g1'g2 <br>
+Entradas do tipo 70.5 não serão aceitas<br>
+
+Verificando o ultimo regex:atualmente reconhecemos entradas somente com o apóstrofo x'y ou x '  y 
+```{r}
+pattern3 <- "^[4-7]\\s*'\\s*\\d{1,2}$"
+```
+
+**Grouping:**
+```{r}
+pattern3_groups <- "^([4-7])\\s*'\\s*\\(d{1,2})$"
+```
+
+
+```{r}
+problems2[1:10]
+```
+As entradas 2, 8 e 10 tem caracteristica do regex
+
+### str_match e str_extract
+```{r}
+str_match(problems2, pattern3_groups)[1:10,]
+```
+str_match reconhece os groupings e retorna uma matriz
+
+```{r}
+str_extract(problems2, pattern3_groups)[1:10]
+```
+str_extract não reconhece grupos retorna um vetor com os matches <br>
+
+---
+
+### str_replace reconhece os grupos**
+```{r}
+pattern4_groups <- "^([4-7])\\s*'\\s*(\\d{1,2})$"
+problems4 <- str_replace(problems2, pattern4_groups, "\\1'\\2")
+problems2[2]
+problems4[2]
+```
+
+### Adicionando os outros separadores
+```{r}
+pattern5_groups <- "^([4-7])\\s*['|\\.|\\s+|,]\\s*(\\d{1,2})$"
+problems5 <- str_replace(problems2, pattern5_groups, "\\1'\\2")
+problems2[3]
+problems5[3]
+```
+
+```{r}
+problems5[1:20]
+```
+
+```{r}
+matches_5<- sum((str_detect(problems5, pattern5_groups) == TRUE))
+total <- length(problems5)
+success_rate_5 <- sum(matches_5)/total
+success_rate_5
+```
+Após o tratamento de strings, a taxa de detecção com a expressão regular atual é de 42%! <br>
+
+Itens que ainda não foram tratados
+```{r}
+x <- str_detect(problems5, pattern5_groups)
+problems5[!x]
+```
+
+## Extraindo os numeros
+Ainda existe trabalho a ser realizado vamos ver como se extrai-se números agora que uma parcela considerável já esta na foram x'y
+
+## separate e extract
+```{r}
+s <- c("5'10", "6'1", "5'8inches")
+tab <- data.frame(x = s)
+tab
+```
+```{r}
+separate (tab, col = x, c("feet", "inches"), sep = "'") ##tab %>% separate(x, c("feet", "inches"), sep = "'") mesma coisa
+```
+
+utilizando a função extract, podemos usar expressões regulares e não ficar limitados aos separadores:
+
+```{r}
+extract (tab, col = x, c("feet", "inches"), regex = "(\\d)'(\\d{1,2})")
+
+```
+
+
