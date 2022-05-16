@@ -311,6 +311,7 @@ Itens que ainda não foram tratados
 ```{r}
 x <- str_detect(problems5, pattern5_groups)
 problems5[!x]
+#problems5[x]
 ```
 
 ## Extraindo os numeros
@@ -333,4 +334,194 @@ extract (tab, col = x, c("feet", "inches"), regex = "(\\d)'(\\d{1,2})")
 
 ```
 
+## Voltando ao tratamento de strings
+Muitos dos casos atuais não tratados são alturas colocadas em centimetros, esse não é um caso que vamos tratar a expressão regular, vamos tratar a base de dados para ficar na forma
+
+### 1. Remover itens como "cm"ou " cm"
+
+```{r}
+problems6 <- problems5 %>% 
+  str_replace("feet|ft|foot", "'") %>% # replace feet, ft, foot with ' 
+  str_replace("inches|in|''|\"", "") %>% # remove all inches symbols
+  str_replace("cm", "") %>% #remove cm 
+  str_trim(.) #remove spaces at the end
+problems6
+```
+
+
+### 2. Valores como 5 ou 6 
+```{r}
+problems7 <- problems6 %>% 
+  str_replace("feet|ft|foot", "'") %>% # replace feet, ft, foot with ' 
+  str_replace("inches|in|''|\"", "") %>% # remove all inches symbols
+  str_replace("cm", "") %>% #remove cm
+  str_replace("^([56])'?$", "\\1'0") %>% #transformar na forma x'y
+  str_trim(.) #remove spaces at the end
+problems6[1]
+problems7[1]
+```
+### 3. Valores como "5'7.5" ou "5' 7.78" <br>
+Vamos aceitar digitos após o .
+```{r}
+## current_pattern<- "^([4-7])\\s*['|\\.|\\s+|,]\\s*(\\d{1,2})$" 
+pattern8_groups <- "^([4-7])\\s*['|\\.|\\s+|,]\\s*(\\d+\\.?\\d*)$"
+problems8 <- str_replace(problems7, pattern8_groups, "\\1'\\2")
+#str_match(problems7, pattern8_groups)
+
+problems7[117]
+problems8[117]
+```
+
+Taxa de detecção atual
+
+```{r}
+x <- str_detect(problems8, pattern8_groups)
+sprintf ("Taxa de detecção: %0.2f", sum(x)/length(problems8))
+problems8[!x]
+```
+### 4. Valores em cm e m 
+Muitas das entradas atuais estão em cm. <br>
+1. Sabemos que estão em cm porque são maiores que a maior altura de 99.999% da população <br>
+2. Sabemos que estão em m porque são menores que a menor altura de 99.999% da população <br>
+
+```{r}
+convert <- function (x, maxmeter = 2.50, mincm = 85)
+{
+  if (x < maxmeter)
+  {
+    x <- x * 3.28084
+    feet <- as.character(as.integer(x))
+    inches <- as.character(round(x - as.integer(x), 1)*10)
+    newv <- paste(feet,"'",inches, sep = "")
+  }
+  else if (x > mincm & x < 250)
+  {
+    x <- x*0.0328084
+    feet <- as.character(as.integer(x))
+    inches <- as.character(round(x - as.integer(x), 1)*10)
+    newv <- paste(feet,"'",inches, sep = "")
+  }
+  else
+  {
+    newv <- x
+  }
+  newv
+}
+
+```
+
+```{r}
+problems9 <- problems8
+
+
+x <- is.na(as.numeric(problems9))
+problems9[!x] <- sapply(as.numeric(problems9[!x]), convert)
+```
+```{r}
+pattern9_groups <- pattern8_groups
+
+x <- str_detect(problems9, pattern9_groups)
+sprintf ("Taxa de detecção: %0.2f", sum(x)/length(problems9))
+problems9[x]
+```
+
+Vamos parar por aqui, já foi tratada a maioria das entradas e as entradas remanescentes não nos forneceria dados utilizaveis de forma geral.
+
+## String Splitting
+
+```{r}
+filename <- system.file("extdata/murders.csv", package = "dslabs")
+lines <- readLines(filename)
+lines %>% head()
+```
+## Queremos transformar em um data frame para utilizarmos
+
+```{r}
+head (str_split(lines, ","))
+```
+### Usando-se o argumento simplify
+```{r}
+head (str_split(lines, ",", simplify = TRUE))
+```
+```{r}
+x <- (str_split(lines, ",", simplify = TRUE))
+colnames <- x[1,]
+#colnames
+#remover primeira linha
+x <- x[-1,]
+head(x)
+```
+
+
+
+```{r}
+#criar df
+mydf <- data.frame(x)
+names(mydf) <- colnames
+mydf
+```
+
+## Map
+**Library Purr**
+Supondo que ao invés de utilizar str_split com o argumento simplify = TRUE, estamos lidando com uma lista de listas
+```{r}
+y <- (str_split(lines, ","))
+head(y)
+```
+
+Removendo linha de títulos
+```{r}
+y <- y [-1]
+```
+
+
+
+Usando a função map
+```{r}
+library(purrr)
+
+primeiro <- function (lista)
+  lista[1]
+
+head(map(y, primeiro))
+```
+
+```{r}
+map_chr(y, 2)
+```
+Neste caso, a cada lista foi aplicada a funcão que encontra o segundo elemento da lista
+
+```{r}
+dat <- data.frame(map_chr(y, 1),
+                  map_chr(y, 2),
+                  map_chr(y, 3),
+                  map_chr(y, 4),
+                  map_chr(y, 5)) %>%
+  setNames(colnames)
+  
+dat %>% head
+```
+
+---
+
+### Atenção com MAP
+Neste caso, não temos uma lista de listas<br>
+Esta funcão aplica a função para cada elemento da coluna, pois a coluna foi considerada uma lista <br>
+
+```{r}
+col1 <- c(1,3,4)
+col2 <- c(3,9,1)
+mydf <- data.frame(col1, col2)
+mydf
+```
+
+```{r}
+map(mydf, max)
+```
+
+```{r}
+map(dat, max)
+```
+
+## Extraindo dados de pdf
 
