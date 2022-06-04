@@ -1,0 +1,31 @@
+---
+title: "06_03_strings_02"
+output: html_notebook
+---
+
+```{r, include=FALSE}
+library (dplyr)
+library (tidyverse)
+library (dslabs)
+library (rvest)
+library (htmlwidgets)
+library (pdftools)
+library (readr)
+```
+
+## Extraindo dados de pdf
+
+```{r}
+path <- "C:\\Users\\lfima\\Documents\\edx\\06_Data Wrangling\\Section_03_String\\downloads\\pnas_s1.pdf"
+txt <- pdf_text(path)
+raw_data_research_funding_rates <- txt[2] ##page 2 of pdf
+head (str_split(raw_data_research_funding_rates, "\n"))
+```
+
+
+
+```{r}
+tab <- str_split(raw_data_research_funding_rates, "\n")
+tab <- tab[[1]]
+tab %>% head
+```
