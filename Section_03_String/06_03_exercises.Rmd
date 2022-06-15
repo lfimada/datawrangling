@@ -85,7 +85,11 @@ converted[index]
 #converted[!index]
 ```
 
-Which answer best describes the differences between the regex string we use as an argument in str_replace("^([4-7])\\s*[,\\.\\s+]\\s*(\\d*)$", "\\1'\\2") and the regex string in pattern <- "^[4-7]\\s*'\\s*\\d{1,2}$"?
+Which answer best describes the differences between the regex string we use as an argument in
+
+```{r}
+str_replace("^([4-7])\\s*[,\\.\\s+]\\s*(\\d*)$", "\\1'\\2") and the regex string in pattern <- "^[4-7]\\s*'\\s*\\d{1,2}$"?
+```
 
 ### Question 13
 1 point possible (graded)
@@ -107,8 +111,28 @@ converted
 ```
 
       
+## Question 1
+1 point possible (graded)
+You have the following table, schedule:
 
-      
+```{r}
+>schedule
+day		staff
+Monday		Mandy, Chris and Laura
+Tuesday		Steve, Ruth and Frank
+```
+
+
+You want to turn this into a more useful data frame.
+
+Which two commands would properly split the text in the “staff” column into each individual name? Select ALL that apply.
+
+```{r}
+
+```
+
+
+
 
 
     

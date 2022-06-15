@@ -1,0 +1,139 @@
+---
+title: "Exercises 02"
+output: html_notebook
+---
+
+Question 1
+1 point possible (graded)
+You have the following table, schedule:
+
+```{r}
+schedule <- data.frame(c("Monday", "Tuesday"), c("Mandy, Chris and Laura","Steve, Ruth and Frank" ))
+names(schedule) <- c("day", "staff")
+schedule
+```
+You want to turn this into a more useful data frame
+Which two commands would properly split the text in the “staff” column into each individual name? Select ALL that apply.
+
+```{r}
+str_split(schedule$staff, ", | and ")
+```
+```{r}
+str_split(schedule$staff, ",\\s|\\sand\\s")
+```
+
+Question 2
+1 point possible (graded)
+You have the following table, schedule:
+
+```{r}
+schedule
+```
+
+What code would successfully turn your “Schedule” table into the following tidy table?
+tidy
+
+```
+day     staff
+<chr>   <chr>
+Monday  Mandy
+Monday  Chris
+Monday  Laura
+Tuesday Steve
+Tuesday Ruth 
+Tuesday Frank
+```
+
+```{r}
+tidy <- schedule %>%  mutate(staff = str_split(staff, ", | and ")) %>%  unnest()
+tidy
+```
+
+
+## Assessment Part 2: String Processing Part 3
+Import raw Brexit referendum polling data from Wikipedia:
+
+```{r, include =  FALSE}
+library(rvest)
+library(tidyverse)
+library(stringr)
+```
+
+```{r}
+url <- "https://en.wikipedia.org/w/index.php?title=Opinion_polling_for_the_United_Kingdom_European_Union_membership_referendum&oldid=896735054"
+tab <- read_html(url) %>% html_nodes("table")
+polls <- tab[[6]] %>% html_table(fill = TRUE)
+polls
+```
+
+
+You will use a variety of string processing techniques learned in this section to reformat these data.
+
+## Question 4
+1 point possible (graded)
+Some rows in this table do not contain polls. You can identify these by the lack of the percent sign (%) in the Remain column.
+
+Update polls by changing the column names to c("dates", "remain", "leave", "undecided", "lead", "samplesize", "pollster", "poll_type", "notes") 
+
+How many rows remain in the polls data frame?
+```{r}
+names(polls) <- c("dates", "remain", "leave", "undecided", "lead", "samplesize", "pollster", "poll_type", "notes")
+polls
+```
+and only keeping rows that have a percent sign (%) in the remain column.
+```{r}
+d <- "%"
+x <- filter(polls,  str_detect(remain, d) == TRUE)
+x
+```
+
+
+
+```{r}
+as.numeric(str_replace(x$remain, "%", ""))/100
+```
+```{r}
+parse_number(x$remain)/100
+```
+
+## Question 6
+3 points possible (graded)
+The undecided column has some "N/A" values. These "N/A"s are only present when the remain and leave columns total 100%, so they should actually be zeros.
+
+Use a function from stringr to convert "N/A" in the undecided column to 0. The format of your command should be function_name(polls$undecided, "arg1", "arg2").
+
+What function replaces function_name?
+```{r}
+#polls$Undecided
+str_replace(polls$Undecided, "N/A", "0")
+```
+
+
+## Question 7
+0.0/3.5 points (graded)
+The dates column contains the range of dates over which the poll was conducted. The format is "8-10 Jan" where the poll had a start date of 2016-01-08 and end date of 2016-01-10. Some polls go across month boundaries (16 May-12 June).
+
+The end date of the poll will always be one or two digits, followed by a space, followed by the month as one or more letters (either capital or lowercase). In these data, all month abbreviations or names have 3, 4 or 5 letters.
+
+Write a regular expression to extract the end day and month from dates. Insert it into the skeleton code below:
+```{r}
+(polls$`Date(s) conducted`)
+```
+
+
+
+```{r}
+temp1 <- str_extract_all(polls$`Date(s) conducted`, "\\d+\\s[a-zA-Z]+")
+temp2 <- str_extract_all(polls$`Date(s) conducted`, "\\d{1,2}\\s[a-zA-Z]+")
+temp3 <- str_extract_all(polls$`Date(s) conducted`, "\\d+\\s[a-zA-Z]{3,5}")
+
+identical(temp1, temp2)
+identical(temp1, temp3)
+identical(temp2, temp3)
+
+#end_date <- sapply(temp, function(x) x[length(x)]) # take last element (handles polls that cross month boundaries)
+```
+      
+
+Which of the following regular expressions correctly extracts the end day and month when inserted into the blank in the code above?
+

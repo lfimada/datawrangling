@@ -432,4 +432,3 @@ What is the first table number to have 9 columns where the first column is named
 ```{r}
 6
 ```
-

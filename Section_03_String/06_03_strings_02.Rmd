@@ -19,9 +19,13 @@ library (readr)
 path <- "C:\\Users\\lfima\\Documents\\edx\\06_Data Wrangling\\Section_03_String\\downloads\\pnas_s1.pdf"
 txt <- pdf_text(path)
 raw_data_research_funding_rates <- txt[2] ##page 2 of pdf
-head (str_split(raw_data_research_funding_rates, "\n"))
+raw_data_research_funding_rates
 ```
 
+Para quebrar em pedaços menores de informação, vamos dividir a cada quebra de linha
+```{r}
+head (str_split(raw_data_research_funding_rates, "\n"))
+```
 
 
 ```{r}
@@ -29,3 +33,143 @@ tab <- str_split(raw_data_research_funding_rates, "\n")
 tab <- tab[[1]]
 tab %>% head
 ```
+Podemos ver que os titulos das tabelas estao nas listas 3 e 5
+
+```{r}
+title1 <- tab[3]
+title2 <- tab[5]
+title1
+title2
+```
+
+## Extraindo os titulos dos graficos
+
+Idealmente gostariamos de somente uma linha para este grafico ao inves de duas <br>
+Vamos deixar as colunas no tipo Applications_Total, Awards_Men etc <br>
+
+Vamos extrair os nomes das colunas para title1
+```{r}
+ title1<- title1 %>% str_trim() %>% 
+  str_replace_all(",\\s.", "") %>% ##remove n and percentage
+    str_split("\\s{2,}", simplify = TRUE) ##coloca em uma matriz
+title1
+```
+
+Vamos extrair os nomes das colunas para title2
+```{r}
+title2
+```
+```{r}
+title2 <-   title2 %>% str_trim()
+title2
+```
+Agora temos que remover os espaçoes entre as strings
+```{r}
+title2 <- title2 %>% str_split("\\s+", simplify = TRUE)
+title2
+```
+## Juntando as strings
+Vamos deixar os dados na forma: Application_Total, Aplication_Men, Aplication_Women<br>
+Retirando os nomes da matriz, colocando-os em uma lista
+```{r}
+temp_title1  <- title1[,1] #Get 1st column
+temp_title2  <- title2[1,-1] #Get after first column, 1st row
+temp_title1
+temp_title2
+```
+## Combinando em um df
+```{r}
+df_names <- str_c(rep(temp_title1, each = 3), temp_title2, sep = "_")
+df_names
+```
+
+Transformando "Success rates_Total" em "Success_rates_Total
+```{r}
+df_names <- df_names %>% str_replace("\\s", "_")
+df_names
+```
+Não pode-se esquecer a coluna "Discipline" que não foi contada ao cria-se a lista
+```{r}
+df_names_final <- c("Discipline", df_names)
+df_names_final
+```
+
+
+## Pegando os dados
+
+```{r}
+path <- "C:\\Users\\lfima\\Documents\\edx\\06_Data Wrangling\\Section_03_String\\downloads\\pnas_s1.pdf"
+txt <- pdf_text(path)
+raw_data_research_funding_rates <- txt[2] ##page 2 of pdf
+head (str_split(raw_data_research_funding_rates, "\n"))
+```
+
+Podemos observar que os dados da primeira tabela estão nas listas 7 a 16 <br>
+Quebrando em listas a cada quebra de linha, retirando da lista de listas e colocando em uma unica lista de strings
+```{r}
+dt <- str_split(raw_data_research_funding_rates, "\n")
+dt <- dt[[1]]
+dt
+```
+
+Para mostrar somente o que queremos
+```{r}
+dt[7:16]
+```
+
+## Tratando os dados
+Removendo os espaços
+```{r}
+dt[7:16] %>% str_trim()
+```
+Transformando em uma lista de itens unicos
+```{r}
+dt <- dt[7:16] %>% str_trim() %>% str_split("\\s{2,}", simplify = TRUE)
+dt
+```
+
+## Colocando em um df
+Agora que temos os nomes e os dados, vamos colocar no data frame:
+```{r}
+my_df <- data.frame(stringsAsFactors = FALSE, data = dt )
+my_df <- setNames(my_df, df_names_final)
+my_df
+
+```
+
+## Recode
+```{r, include = FALSE}
+library (dslabs)
+library (tidyverse)
+library (ggplot2)
+
+data(gapminder)
+
+```
+
+
+Selecionar apenas a regiao do caribe
+```{r}
+tab <- gapminder %>% select(life_expectancy, region, country, year) %>% filter(region == "Caribbean")
+tab
+```
+
+
+Notar que estes dados poderiam ser maiores se o nomes dos paises nao fossse tao longo. <br>
+Para isto será utilizado o comando recode
+```{r}
+tab %>% ggplot(aes(x = year, y = life_expectancy, color = country)) + geom_line()
+```
+
+```{r}
+country2 <- recode(tab$country, 'Antigua and Barbuda'="Barbuda",
+                    'Dominican Republic' = "DR",
+                    'St. Vincent and the Grenadines' = "St. Vincent",
+                    'Trinidad and Tobago' = "Trinidad")
+```
+
+Agora a área do gráfico fica maior! <br>
+```{r}
+tab %>% ggplot(aes(x = year, y = life_expectancy, color = country2)) + geom_line()
+```
+

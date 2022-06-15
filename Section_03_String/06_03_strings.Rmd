@@ -3,7 +3,6 @@ title: "06_03 String Processing"
 output: html_notebook
 ---
 
-
 ```{r, include=FALSE}
 library (dplyr)
 library (tidyverse)
@@ -126,7 +125,6 @@ str_subset(heights$height, ",")
 ```
 
 **Podemos utilizar estas funções com expressões regulares ou regex**<br>
-
 ### Verificando entradas com cm ou inches
 
 ```{r}
