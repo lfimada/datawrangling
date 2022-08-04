@@ -1,0 +1,334 @@
+---
+title: "06_04 Dates and Times"
+output: html_notebook
+---
+
+## Estudo de caso: Trump tweets
+
+**Hipótese:** <br>
+Tweets from iPhone: equipe de Trump <br>
+Tweets from Android: Donald Trump <br>
+```{r, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(tidyr)
+library(scales)
+library(tidytext)
+library(dslabs)
+set.seed(1)
+```
+
+```{r}
+data("trump_tweets")
+```
+
+```{r}
+head (trump_tweets)
+```
+
+```{r}
+names(trump_tweets)
+```
+```{r}
+class(trump_tweets$created_at)
+```
+
+
+```{r}
+trump_tweets %>% count(source) %>% arrange(desc(n))
+```
+
+
+```{r}
+trump_tweets %>% 
+  extract(source, "source", "Twitter for (.*)") %>%  count(source) 
+```
+
+
+Filtrando somente as datas durante a campanha
+```{r}
+
+campaign_tweets <- trump_tweets %>% extract(source, "source", "Twitter for (.*)") %>%   filter(source %in% c("Android", "iPhone") &  created_at >= ymd("2015-06-17") & created_at < ymd("2016-11-08")) %>%  filter(!is_retweet) %>%
+  arrange(created_at)
+campaign_tweets
+```
+
+
+
+```{r}
+ds_theme_set()
+campaign_tweets <- campaign_tweets %>%  mutate(hour = hour(with_tz(created_at, "EST"))) %>%
+  count(source, hour) %>%
+  group_by(source) %>%
+  mutate(percent = n / sum(n)) %>%
+  ungroup 
+campaign_tweets
+```
+
+
+```{r}
+campaign_tweets %>% ggplot(aes(hour, percent, color = source)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = percent_format()) +
+  labs(x = "Hour of day (EST)",
+       y = "% of tweets",
+       color = "")
+```
+Pode-se verificar que entre 6 e 8 horas existe um pico acentuado de tweets vindos somente do Android, reforçando a tese que tratam-se de duas entidades diferentes.
+
+## Analisando os textos
+
+```{r}
+library(tidytext)
+```
+
+```{r}
+example <- data.frame(line = c(1, 2, 3, 4),
+                    txt = c("Roses are red,", "Violets are blue,", "Sugar is sweet,", "And so are you."))
+example
+```
+```{r}
+example %>% unnest_tokens(word, txt)
+```
+
+Extraindo tweets - Voltando ao exemplo de Trump
+
+```{r}
+campaign_tweets <- trump_tweets %>% extract(source, "source", "Twitter for (.*)") %>%   filter(source %in% c("Android", "iPhone") &  created_at >= ymd("2015-06-17") & created_at < ymd("2016-11-08")) %>%  filter(!is_retweet) %>%
+  arrange(created_at)
+campaign_tweets
+```
+
+Tokenizando um tweet aleatorio
+```{r}
+i <- 3008
+campaign_tweets$text[i]
+```
+
+```{r}
+i <- 3008
+campaign_tweets[i,] %>% select(text) %>% unnest_tokens(word, text)
+```
+Podemos ver que o "#TBT" não foi tokenizado, "@JerryJrFalwell" tornou-se "jerryjrfalwell" <br>
+Para poder pegar corretamente vamos utilizar expressões regulares ao invés do argumento já implementado "word"
+
+```{r}
+i <- 3008
+pattern <- "([^A-Za-z\\d#@']|'(?![A-Za-z\\d#@]))"
+campaign_tweets[i,] %>% select(text) %>% unnest_tokens(word, text, token = "regex", pattern = pattern)
+```
+
+Não é necessário pegar links
+
+```{r}
+i <- 3008
+campaign_tweets[i,] %>% select(text) %>% str_replace_all("https://t.co/[A-Za-z\\d]+|&amp;", "")
+```
+Substituindo para todos os tweets
+```{r}
+tweet_words2 <- campaign_tweets %>% mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", ""))
+```
+
+
+```{r}
+tweet_words2[3008,]
+```
+
+Agora vamos extrair as palavras de todos os tweets
+
+```{r}
+pattern <- "([^A-Za-z\\d#@']|'(?![A-Za-z\\d#@]))"
+tweet_words2 %>% select(text) %>% unnest_tokens(word, text, token = "regex", pattern = pattern)
+```
+
+```{r}
+count_word <- tweet_words2 %>% select(text) %>% unnest_tokens(word, text, token = "regex", pattern = pattern)
+
+count_word %>% count(word) %>%  arrange(desc(n))
+```
+
+Removendo as palavras não informativas, os pacote tidytext já possui uma lista chamada stop_words
+```{r}
+count_word %>% filter(!word %in% stop_words$word) %>% count(word) %>% top_n(10, n) %>% arrange(desc(n)) 
+```
+
+## Separando as palavras por dispositivos
+
+
+```{r}
+#tweet_words
+pattern <- "([^A-Za-z\\d#@']|'(?![A-Za-z\\d#@]))"
+
+tweet_words2 %>% group_by(source) %>% select(source, text) %>% 
+  unnest_tokens(word, text, token = "regex", pattern = pattern) %>%
+  filter(!word %in% stop_words$word) %>%
+  count(word) %>%
+  top_n(10, n) %>%
+  arrange(desc(source),(desc(n)) )
+ 
+```
+
+Vamos analisar a proporção que uma palavra tem de aparecer em um iPhone ou Android
+
+Tweet words: todas as palavras de todos os tweets de campanha tokenizadas
+```{r}
+tweet_words <- campaign_tweets %>% 
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", ""))  %>%
+  unnest_tokens(word, text, token = "regex", pattern = pattern)
+```
+
+
+Palavras mais provaveis de aparecer no Android:
+```{r}
+android_iphone_or <- tweet_words %>%
+  count(word, source) %>%
+  spread(source, n, fill = 0) %>%
+  mutate(or = (Android + 0.5) / (sum(Android) - Android + 0.5) / 
+           ( (iPhone + 0.5) / (sum(iPhone) - iPhone + 0.5)))
+android_iphone_or %>% filter(Android+iPhone > 100) %>%  arrange(desc(or))
+
+
+```
+**Aqui existe uma passagem não trivial para odds_ratio: ** <br>
+```{r}
+or = (Android + 0.5) / (sum(Android) - Android + 0.5)
+```
+**Por que or = Android / sum(Android) - Android ?**
+
+Exemplo para a palavra "big" <br>
+Construindo df:
+
+```{r}
+big_df <- data.frame (c("yes", "no", "total"), c(171 ,sum(android_iphone_or$Android)- 171, sum(android_iphone_or$Android) ), c(32 , sum( android_iphone_or$iPhone)- 32, sum( android_iphone_or$iPhone) ))
+names(big_df) <- c("big", "Android", "iPhone")
+big_df
+```
+
+Calculando o odds ratio para Android:<br>
+
+$Android_{or} = \frac{yes}{total}:\frac{no}{total}$ <br>
+$no = total - yes$ <br>
+$Android_{or} = \frac{yes}{total} . \frac{total}{total - yes}$ <br>
+$Android_{or} = \frac{yes}{total - yes}$ <br>
+
+Por fim, Odds ratio Android x iPhone:<br>
+$OR = \frac{Android_{or}}{iPhone_{or}}$ <br>
+
+**No código utilizado pelo curso esta passagem está sendo colocada de forma direta**
+
+---
+
+
+Palavras mais provaveis de aparecer no IPhone:
+```{r}
+android_iphone_or %>% filter(Android+iPhone > 100) %>%  arrange(or)
+```
+
+
+## Analise de sentimentos
+
+No pacote tidytext existe mapas para realizar análise de sentimentos, que trata-se se dar um valor numérico, binário ou qualquer outra escala para cada palavra.
+
+O mapa default agrupa palavras em positivas e negativas
+```{r}
+head(sentiments)
+```
+O mapa afinn agrupa palavras em números de -5 a 5
+```{r}
+#install.packages("textdata")
+head(get_sentiments("afinn"))
+```
+A biblioteca nrc agrupa palavras em 10 sentimentos
+```{r}
+head (get_sentiments("nrc")) #%>% count(sentiment)
+```
+
+
+Vamos utilizar o mapa nrc
+```{r}
+nrc <- get_sentiments("nrc") %>% select(word, sentiment)
+```
+
+Utilizando inner join (tabela resultando de palavras que estão nas duas listas)
+```{r}
+tweet_sentiments <- inner_join(tweet_words,nrc)
+tweet_sentiments %>% group_by(source) %>% count(sentiment, word) %>% top_n(10,n) %>% arrange(desc(source), desc(n))
+
+```
+A tabela acima baseia-se nas palavras mais utilizadas. Agora vamos realizar uma análise baseada somente nos sentimentos, sem escolher palavras mais utilizadas
+
+```{r}
+sentiment_counts <- tweet_words %>%
+  left_join(nrc, by = "word") %>%
+  count(source, sentiment) #%>%
+  #spread(source, n) %>%
+  #mutate(sentiment = replace_na(sentiment, replace = "none"))
+sentiment_counts
+```
+
+
+Agrupando Android e IPhone em colunas e n nas linhas, usa-se spread()
+```{r}
+sentiment_counts <- tweet_words %>%
+  left_join(nrc, by = "word") %>%
+  count(source, sentiment) %>%
+  spread(source, n) %>%
+  mutate(sentiment = replace_na(sentiment, replace = "none"))
+sentiment_counts
+```
+
+
+```{r}
+tweet_words %>% group_by(source) %>% summarize(n = n())
+```
+
+Calculando ODDs ratio:  <br>
+1 - Proporcao de cada sentimento para Android e iPhone<br>
+2 - Divide-se ambas as proporção<br>
+
+Ex. Para o sentimento disgust: <br>
+1.4% / 1%
+
+```{r}
+sentiment_counts %>%
+  mutate(Android = Android / (sum(Android) - Android) , 
+         iPhone = iPhone / (sum(iPhone) - iPhone), 
+         or = Android/iPhone) %>%
+  arrange(desc(or))
+```
+Os sentimentos que possuem um maior OR são disgust, anger e negative.
+Será que possuem relevância significativa
+
+Hipótese nula: Qual a probabilidade de se obter essa diferença de odds_ratio se os sentimentos fossem distribuidos de forma aleatória
+```{r}
+library(broom)
+log_or <- sentiment_counts %>%
+  mutate( log_or = log( (Android / (sum(Android) - Android)) / (iPhone / (sum(iPhone) - iPhone))),
+          se = sqrt( 1/Android + 1/(sum(Android) - Android) + 1/iPhone + 1/(sum(iPhone) - iPhone)),
+          conf.low = log_or - qnorm(0.975)*se,
+          conf.high = log_or + qnorm(0.975)*se) %>%
+  arrange(desc(log_or))
+  
+log_or
+```
+
+
+```{r}
+log_or %>%
+  mutate(sentiment = reorder(sentiment, log_or),) %>%
+  ggplot(aes(x = sentiment, ymin = conf.low, ymax = conf.high)) +
+  geom_errorbar() +
+  geom_point(aes(sentiment, log_or)) +
+  ylab("Log odds ratio for association between Android and sentiment") +
+  coord_flip() 
+```
+
+
+
+
+
+
+
+
